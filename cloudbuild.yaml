@@ -1,0 +1,8 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/fc-itw-bacon/backend:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/fc-itw-bacon/backend:latest']
+
+images:
+  - 'gcr.io/fc-itw-bacon/backend:latest'

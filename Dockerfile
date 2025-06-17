@@ -1,19 +1,22 @@
 # Use official Node.js LTS image
-FROM node:18
+FROM node:18-slim
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy package files
+# Copy dependency definitions
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install production dependencies only
+RUN npm install --omit=dev
 
-# Copy the rest of the code
+# Copy app source code
 COPY . .
 
-# Expose the port your app runs on (e.g., 8080)
+# Set environment variable to production
+ENV NODE_ENV=production
+
+# Expose the port used by the app
 EXPOSE 8080
 
 # Start the app
