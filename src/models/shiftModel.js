@@ -1,39 +1,65 @@
-// models/shiftModel.js
-import db from '../config/firestore.js'
-import { v4 as uuidv4 } from 'uuid'
+import datastore from '../config/firestore.js';
+import { v4 as uuidv4 } from 'uuid';
 
-const shiftsCollection = db.collection('shifts')
+const shiftKind = 'Shift';
+const workerKind = 'Worker';
 
 export async function getAllShifts() {
-  const shiftsSnap = await shiftsCollection.get();
-  const shifts = shiftsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const [shifts] = await datastore.runQuery(datastore.createQuery(shiftKind));
 
-  // Get all active workers
-  const workersSnap = await db.collection('workers').where('active', '==', 1).get();
-  const activeWorkerIds = new Set(workersSnap.docs.map(doc => doc.id));
+  const [workers] = await datastore.runQuery(
+    datastore.createQuery(workerKind).filter('active', '=', 1)
+  );
 
-  // Filter shifts: keep only those with active workers
-  const filteredShifts = shifts.filter(shift => activeWorkerIds.has(shift.workerId));
+  const activeWorkerIds = new Set(
+    workers.map(worker => worker[datastore.KEY].name)
+  );
 
-  return filteredShifts;
+  return shifts
+    .filter(shift => activeWorkerIds.has(shift.workerId))
+    .map(shift => ({
+      id: shift[datastore.KEY].name,
+      ...shift
+    }));
 }
 
 export async function getShiftsByWorker(workerId) {
-  const snapshot = await shiftsCollection.where('workerId', '==', workerId).get()
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  const query = datastore
+    .createQuery(shiftKind)
+    .filter('workerId', '=', workerId);
+
+  const [shifts] = await datastore.runQuery(query);
+
+  return shifts.map(shift => ({
+    id: shift[datastore.KEY].name,
+    ...shift
+  }));
 }
 
 export async function addShift(shift) {
-  const id = uuidv4()
-  await shiftsCollection.doc(id).set(shift)
-  return { id, ...shift }
+  const id = uuidv4();
+  const shiftKey = datastore.key([shiftKind, id]);
+
+  await datastore.save({
+    key: shiftKey,
+    data: shift
+  });
+
+  return { id, ...shift };
 }
 
 export async function updateShift(id, shift) {
-  await shiftsCollection.doc(id).update(shift)
-  return { id, ...shift }
+  const shiftKey = datastore.key([shiftKind, id]);
+
+  await datastore.update({
+    key: shiftKey,
+    data: shift
+  });
+
+  return { id, ...shift };
 }
 
 export async function deleteShift(id) {
-  await shiftsCollection.doc(id).delete()
+  const shiftKey = datastore.key([shiftKind, id]);
+  await datastore.delete(shiftKey);
 }
