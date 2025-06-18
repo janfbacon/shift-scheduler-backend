@@ -1,17 +1,28 @@
-import db from '../config/firestore.js'
+import datastore from '../config/firestore.js'
 
-const tzCollection = db.collection('settings')
+const KIND = 'Settings'
+const TIMEZONE_ID = 'timezone'
 
 export async function getTimezone() {
-  const snapshot = await tzCollection.doc('timezone').get()
-  if (!snapshot.exists) {
-    return 'UTC'  // Fallback default
+  const key = datastore.key([KIND, TIMEZONE_ID])
+  const [entity] = await datastore.get(key)
+
+  if (!entity) {
+    return 'UTC' // fallback
   }
-  const data = snapshot.data()
-  return data.value || 'UTC'
+
+  return entity.value || 'UTC'
 }
 
 export async function setTimezone(newTimezone) {
-  await tzCollection.doc('timezone').set({ value: newTimezone })
+  const key = datastore.key([KIND, TIMEZONE_ID])
+  const entity = {
+    key,
+    data: {
+      value: newTimezone,
+    },
+  }
+
+  await datastore.save(entity)
   return { value: newTimezone }
 }
