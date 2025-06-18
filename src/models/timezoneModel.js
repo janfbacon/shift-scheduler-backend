@@ -4,16 +4,16 @@ const KIND = 'settings'
 const TIMEZONE_ID = 'timezone'
 
 export async function getTimezone() {
-  const key = datastore.key(['settings', 'timezone'])
-  console.log('Fetching Datastore key:', key)
-  const [entity] = await datastore.get(key)
-  console.log('Fetched entity:', entity)
+  const key = datastore.key(['settings', 'timezone']);
+  console.log('Fetching Datastore key:', key);
+  const [entity] = await datastore.get(key);
+  console.log('Entity fetched:', entity);
 
-  if (!entity) {
-    return 'UTC'
+  if (!entity || !entity.value) {
+    return 'UTC';
   }
 
-  return entity.value || 'UTC'
+  return entity.value;
 }
 
 export async function setTimezone(newTimezone) {
