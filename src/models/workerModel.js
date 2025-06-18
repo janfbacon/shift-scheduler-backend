@@ -1,7 +1,7 @@
 import datastore from '../config/firestore.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const kind = 'Worker';
+const kind = 'workers';
 
 export async function getAllWorkers() {
   const query = datastore.createQuery(kind).filter('active', '=', 1);

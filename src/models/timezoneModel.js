@@ -1,6 +1,6 @@
 import datastore from '../config/firestore.js'
 
-const KIND = 'Settings'
+const KIND = 'settings'
 const TIMEZONE_ID = 'timezone'
 
 export async function getTimezone() {

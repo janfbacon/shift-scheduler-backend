@@ -1,8 +1,8 @@
 import datastore from '../config/firestore.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const shiftKind = 'Shift';
-const workerKind = 'Worker';
+const shiftKind = 'shifts';
+const workerKind = 'workers';
 
 export async function getAllShifts() {
   const [shifts] = await datastore.runQuery(datastore.createQuery(shiftKind));
