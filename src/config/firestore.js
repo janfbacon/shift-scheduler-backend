@@ -1,10 +1,13 @@
-import { initializeApp, applicationDefault } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
+// datastore.ts
+import { Datastore } from '@google-cloud/datastore'
 
-initializeApp({ credential: applicationDefault() })
+// Automatically uses the default GCP project and credentials in Cloud Run or App Engine
+const datastore = new Datastore({
+  namespace: '', // "" means default namespace (optional)
+})
 
-const db = getFirestore()
-export default db
+export default datastore
+
 
 //Local emulator testing
 // import { initializeApp, applicationDefault } from 'firebase-admin/app'
