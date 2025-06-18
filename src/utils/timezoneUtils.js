@@ -1,4 +1,4 @@
-import datastore from '..config/firestore.js'
+import datastore from '../config/firestore.js'
 import { DateTime } from 'luxon'
 
 export async function convertAllShiftsToTimezone(newTimezone) {
