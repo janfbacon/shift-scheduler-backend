@@ -23,8 +23,8 @@ app.use('/api/shifts', shiftRoutes);
 
 app.get('/', (req, res) => res.send('Shift Scheduler API running.'));
 
-if (process.env.NODE_ENV !== 'test' || process.env.K_SERVICE) {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 export default app;
