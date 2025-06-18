@@ -4,6 +4,7 @@ import { Datastore } from '@google-cloud/datastore'
 // Automatically uses the default GCP project and credentials in Cloud Run or App Engine
 const datastore = new Datastore({
   namespace: '', // "" means default namespace (optional)
+  projectId: 'fc-itw-bacon' // optional if deployed to GCP
 })
 
 export default datastore
